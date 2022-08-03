@@ -1,17 +1,20 @@
+/*
+    Autor: Eliezer Cocom Cruz
+    Fecha creación: 01/08/2022
+    Descripción: Generación de peticiones a la BD.
+*/
+
 const { response } = require('express');
 const { dbContacts } = require('../DataBase/fakedatabase');
 
+/* Obtiene la lista de contactos */
 const getContacts = (req, res = response) => {
 
     const contacts = [];
 
     dbContacts.map(data => {
-
         contacts.push(data);
-
     });
-
-    console.log(contacts);
 
     res.status(200).json({
         ok: true,
@@ -19,11 +22,10 @@ const getContacts = (req, res = response) => {
     });
 }
 
+/* Obtiene el contacto mediante su ID */
 const getContactsByID = (req, res = response) => {
 
     const contactID = req.params.id;
-    
-    console.log(contactID);
 
     let contacts = [];
 
@@ -32,8 +34,6 @@ const getContactsByID = (req, res = response) => {
             contacts = data;            
         }        
     });
-
-    console.log(contacts)
 
     if (contacts.length <= 0) {
         return res.status(404).json({
@@ -48,11 +48,10 @@ const getContactsByID = (req, res = response) => {
     });
 }
 
+/* Elimina un contacto mediante su ID */
 const deleteContactsByID = (req, res = response) => {
 
     const contactID = req.params.id;
-    
-    console.log(contactID);
 
     const contacts = [];
 
@@ -67,8 +66,13 @@ const deleteContactsByID = (req, res = response) => {
             ok: false,
             msg: `El contacto con ID ${contactID}, no existe.`
         });
-    }
-    
+    }    
+
+    contacts.map(data => {
+        if (data.id == contactID) {
+            contacts.splice(data);                       
+        }        
+    });
 
     res.status(200).json({
         ok: true,
@@ -79,5 +83,6 @@ const deleteContactsByID = (req, res = response) => {
 
 module.exports = {
     getContacts,
-    getContactsByID
+    getContactsByID,
+    deleteContactsByID
 }
